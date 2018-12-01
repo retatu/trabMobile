@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Lista de Compras</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Configuração</string>
+    <string name="msg_dados_pessoais">Digite o seu nome e seu email para configurar o APP</string>
+    <string name="label_nome">Nome</string>
+    <string name="label_email">Email</string>
+    <string name="btn_salvar">Salvar</string>
+    <string name="btn_limpar">Limpar</string>
+    <string name="share">Compartilhar</string>
+    <string name="msg_adicionar_compra">Digite o item para compra</string>
+    <string name="tv_item">Item</string>
+    <string name="tv_quantidade">Quantidade</string>
+    <string name="btn_cancelar">Cancelar</string>
+</resources>
