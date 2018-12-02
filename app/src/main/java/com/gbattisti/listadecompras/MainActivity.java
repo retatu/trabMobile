@@ -35,8 +35,11 @@ import com.gbattisti.listadecompras.DAO.CompraDAO;
 import com.gbattisti.listadecompras.dominio.banco.Banco;
 import com.gbattisti.listadecompras.dominio.banco.BancoBanco;
 import com.gbattisti.listadecompras.dominio.banco.BancoFiltro;
+import com.gbattisti.listadecompras.dominio.banco.recycler.BancoAdapter;
 import com.gbattisti.listadecompras.dominio.economia.Economia;
 import com.gbattisti.listadecompras.dominio.economia.EconomiaBanco;
+import com.gbattisti.listadecompras.dominio.economia.EconomiaFiltro;
+import com.gbattisti.listadecompras.dominio.economia.recycler.EconomiaAdapter;
 import com.gbattisti.listadecompras.dominio.ultis.banco.DB_Conexao;
 
 import java.io.BufferedReader;
@@ -55,7 +58,11 @@ public class MainActivity extends AppCompatActivity
     private static final String NOME_ARQUIVO = "arquivo_listadecompras.txt";
     private static final int Activity_DADOS_PESSOAIS = 10;
 
+    private RecyclerView recyclerViewBanco;
+    private RecyclerView recyclerViewEconomia;
     private RecyclerView recyclerView;
+    private BancoAdapter adapterBanco;
+    private EconomiaAdapter adapterEconomia;
     private ComprasAdapter adapter;
 
     private TextView seu_nome;
@@ -171,10 +178,14 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+        configurarRecyclerBanco();
+        configurarRecyclerEconomia();
         criarCadastroBanco();
         criarCadastroEconomia();
-        configurarRecycler();
+        //configurarRecycler();
     }
+
+
 
     private void criarCadastroBanco(){
         final Button buttonCadastrarBanco = (Button) findViewById(R.id.buttonCadastrarBanco);
@@ -188,6 +199,8 @@ public class MainActivity extends AppCompatActivity
                     banco.setNome(nomeBancoString);
                     BancoBanco bancoBanco = new BancoBanco(getBaseContext());
                     bancoBanco.incluir(banco);
+                    adapterBanco.adicionarBanco(banco);
+                    nomeBanco.setText("");
                     Snackbar.make(buttonCadastrarBanco, "Cadastrado com sucesso.", Snackbar.LENGTH_LONG).show();
                 } catch (Exception ex) {
                     Snackbar.make(buttonCadastrarBanco, ex.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -222,28 +235,68 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void configurarRecycler() {
-        // Configurando o gerenciador de layout para ser uma lista.
-        recyclerView = (RecyclerView) findViewById(R.id.main_recyclerViewID);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+//    private void configurarRecycler() {
+//        // Configurando o gerenciador de layout para ser uma lista.
+//        recyclerView = (RecyclerView) findViewById(R.id.main_recyclerViewID);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+//
+//        // Adiciona o adapter que irá anexar os objetos à lista.
+//        CompraDAO dao = new CompraDAO(this);
+//        adapter = new ComprasAdapter(dao.retornarTodos());
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+//
+//        // Adicionar o arrastar para direita para excluir item
+//
+//
+//    }
 
-        // Adiciona o adapter que irá anexar os objetos à lista.
-        CompraDAO dao = new CompraDAO(this);
-        adapter = new ComprasAdapter(dao.retornarTodos());
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+    private void configurarRecyclerBanco(){
+        try {
+            recyclerViewBanco = (RecyclerView) findViewById(R.id.recyclerView_Bancos);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerViewBanco.setLayoutManager(layoutManager);
 
-        // Adicionar o arrastar para direita para excluir item
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(addArrastarItem());
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+            // Adiciona o adapter que irá anexar os objetos à lista.
+            ArrayList<Banco> listaBanco = new BancoBanco(this).listar(new BancoFiltro());
+            adapterBanco = new BancoAdapter(listaBanco);
+            recyclerViewBanco.setAdapter(adapterBanco);
+            recyclerViewBanco.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+//            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(addArrastarItemBanco());
+//            itemTouchHelper.attachToRecyclerView(recyclerViewBanco);
+        } catch (Exception ex) {
+            Snackbar.make(recyclerViewBanco, "Erro ao configurar recycler do banco."+ex.getCause(), Snackbar.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void configurarRecyclerEconomia(){
+        try {
+            recyclerViewEconomia = (RecyclerView) findViewById(R.id.recyclerView_economias);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerViewEconomia.setLayoutManager(layoutManager);
+
+            ArrayList<Economia> listaEconomia = new EconomiaBanco(this).listar(new EconomiaFiltro());
+            adapterEconomia = new EconomiaAdapter(listaEconomia);
+            recyclerViewEconomia.setAdapter(adapterEconomia);
+            recyclerViewEconomia.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+//            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(addArrastarItemEconomia());
+//            itemTouchHelper.attachToRecyclerView(recyclerViewEconomia);
+        } catch (Exception ex) {
+            Log.d("Erro", ex.getMessage());
+            Snackbar.make(recyclerViewEconomia, "Erro ao configurar recycler da Economia."+ex.getMessage(), Snackbar.LENGTH_LONG).show();
+        }
 
     }
 
 
+
+
     // Recebendo retorno de activity chamadas
     protected void onActivityResult(int codigo, int resultado, Intent i) {
-
         // se o resultado de uma Activity for da Activity_DADOS_PESSOIS
         if (codigo == Activity_DADOS_PESSOAIS) {
             // se o "i" (Intent) estiver preenchido, pega os seus dados (getExtras())
@@ -309,6 +362,20 @@ public class MainActivity extends AppCompatActivity
     private void cadastrarEconomia(){
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.VISIBLE);
         findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
+        try {
+            ArrayList<Economia> listaEconomia = new EconomiaBanco(getBaseContext()).listar(new EconomiaFiltro());
+            if(listaEconomia.size() > 0){
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_economias);
+                recyclerView.setVisibility(View.VISIBLE);
+                EconomiaAdapter economiaAdapter = new EconomiaAdapter(listaEconomia);
+                recyclerView.setAdapter(economiaAdapter);
+            }else{
+                recyclerViewEconomia.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         Spinner spinnerBancos = findViewById(R.id.spinner_bancos);
 
         BancoBanco bancoBanco = new BancoBanco(getBaseContext());
@@ -316,10 +383,10 @@ public class MainActivity extends AppCompatActivity
         try {
             listaBancos = bancoBanco.listar(new BancoFiltro());
             if(listaBancos.size() < 1){
+                spinnerBancos.setAdapter(null);
                 Toast.makeText(getBaseContext(), "Nenhum banco cadastrado, por favor cadastre um banco.", Toast.LENGTH_LONG).show();
                 return;
             }
-
             ArrayAdapter<Banco> itensSpinnerAdapter = new ArrayAdapter<>(getBaseContext(),
                     android.R.layout.simple_spinner_item);
             for (Banco banco : listaBancos){
@@ -330,13 +397,27 @@ public class MainActivity extends AppCompatActivity
             spinnerBancos.setAdapter(itensSpinnerAdapter);
         }
         catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();;
+            //Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     private void cadastrarBanco(){
         findViewById(R.id.include_cadastroBanco).setVisibility(View.VISIBLE);
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
+
+        try {
+            ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());
+            if(listaBancos.size() > 0){
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_Bancos);
+                recyclerView.setVisibility(View.VISIBLE);
+                BancoAdapter bancoAdapter = new BancoAdapter(listaBancos);
+                recyclerView.setAdapter(bancoAdapter);
+            }else{
+                recyclerViewBanco.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e) {
+            //Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -355,7 +436,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(sendIntent);
     }
 
-    public ItemTouchHelper.SimpleCallback addArrastarItem() {
+    public ItemTouchHelper.SimpleCallback addArrastarItemBanco() {
         ItemTouchHelper.SimpleCallback deslizarItem = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
 
             @Override
@@ -373,15 +454,14 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                CompraDAO dao = new CompraDAO(getBaseContext());
-                                int numItens = dao.excluirItem(adapter.getDbID(deleteViewID));
-                                if (numItens > 0) {
-                                    adapter.removerCompra(deleteViewID);
-                                    Snackbar.make(main_layout, "Excluiu!", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                } else {
-                                    Snackbar.make(main_layout, "Erro ao excluir o cliente!", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
+                                try {
+                                    BancoBanco bancoBanco = new BancoBanco(getBaseContext());
+                                    bancoBanco.excluir(adapterBanco.getBanco(deleteViewID));
+                                    adapterBanco.removerBanco(deleteViewID);
+
+                                }catch (Exception ex) {
+                                        Snackbar.make(main_layout, "Erro ao excluir: " + ex.getCause(), Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
                                 }
                             }
                         })
@@ -390,7 +470,7 @@ public class MainActivity extends AppCompatActivity
                             public void onClick(DialogInterface dialog, int which) {
                                 Snackbar.make(main_layout, "Cancelando...", Snackbar.LENGTH_SHORT)
                                         .setAction("Action", null).show();
-                                adapter.cancelarRemocao(deleteViewID);
+                                adapterBanco.cancelarRemocao(deleteViewID);
                             }
                         })
                         .create()

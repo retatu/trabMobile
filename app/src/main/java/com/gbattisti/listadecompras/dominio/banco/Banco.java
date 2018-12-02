@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Banco {
     private int ID;
     private String nome;
+    private Double saldo;
 
     public int getID() {
         return ID;
@@ -22,6 +23,14 @@ public class Banco {
         this.nome = nome;
     }
 
+    public Double getSaldo() {
+        return saldo == null ? 0.0 : saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -33,11 +42,13 @@ public class Banco {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, nome);
+        return Objects.hash(ID, nome, saldo);
     }
 
     @Override
     public String toString() {
         return nome;
     }
+
+
 }

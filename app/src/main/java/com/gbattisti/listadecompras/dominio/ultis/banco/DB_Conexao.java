@@ -9,11 +9,11 @@ public class DB_Conexao extends SQLiteOpenHelper {
     // Nome do banco de dados
     private static final String DATABASE_NAME = "Investimento.db";
     // Versão do banco - incrementar a cada atualização do banco
-    private static final int DATABASE_VERSION = 6;
-    private final String CREATE_TABLE_BANCO = "CREATE TABLE IF NOT EXISTS Banco (ID INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL);";
-    private final String CREATE_TABLE_ECONOMIA = "CREATE TABLE IF NOT EXISTS Economia (ID INTEGER PRIMARY KEY AUTOINCREMENT, saldo double , porcentagem_de_investimento double NOT NULL," +
+    private static final int DATABASE_VERSION = 9;
+    private final String CREATE_TABLE_BANCO = "CREATE TABLE IF NOT EXISTS Banco (ID INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, saldo double);";
+    private final String CREATE_TABLE_ECONOMIA = "CREATE TABLE IF NOT EXISTS Economia (ID INTEGER PRIMARY KEY AUTOINCREMENT, porcentagem_de_investimento double NOT NULL," +
                             "nome text not null, id_banco int not null, " +
-                            "FOREIGN KEY(id_banco) REFERENCES Banco(id));";
+                            "FOREIGN KEY(id_banco) REFERENCES Banco(id) ON DELETE RESTRICT);";
 
     private Context context;
 
@@ -24,7 +24,6 @@ public class DB_Conexao extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE Economia");
         db.execSQL(CREATE_TABLE_BANCO);
         db.execSQL(CREATE_TABLE_ECONOMIA);
     }

@@ -1,5 +1,7 @@
 package com.gbattisti.listadecompras.dominio.economia;
 
+import android.util.Log;
+
 import com.gbattisti.listadecompras.dominio.banco.Banco;
 
 import java.util.Objects;
@@ -8,7 +10,6 @@ public class Economia {
     private int ID;
     private Banco banco;
     private String nome;
-    private Double saldo;
     private Double porcentagemDeInvestimento;
 
     public int getID() {
@@ -35,14 +36,6 @@ public class Economia {
         this.nome = nome;
     }
 
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
     public Double getPorcentagemDeInvestimento() {
         return porcentagemDeInvestimento;
     }
@@ -59,13 +52,32 @@ public class Economia {
         return ID == economia.ID &&
                 Objects.equals(banco, economia.banco) &&
                 Objects.equals(nome, economia.nome) &&
-                Objects.equals(saldo, economia.saldo) &&
                 Objects.equals(porcentagemDeInvestimento, economia.porcentagemDeInvestimento);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, banco, nome, saldo, porcentagemDeInvestimento);
+        return Objects.hash(ID, banco, nome, porcentagemDeInvestimento);
     }
 
+    public Double getSaldoEconomia(){
+        if(getBanco() == null){
+            Log.d("banco", "null");
+        }
+        Double valorBanco = getBanco().getSaldo();
+        Double porcentagem = getPorcentagemDeInvestimento();
+
+        return valorBanco == null ? 0.0 : porcentagem*valorBanco/100.0;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Economia{" +
+                "ID=" + ID +
+                ", banco=" + banco.toString() +
+                ", nome='" + nome + '\'' +
+                ", porcentagemDeInvestimento=" + porcentagemDeInvestimento +
+                '}';
+    }
 }
