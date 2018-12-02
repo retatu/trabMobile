@@ -4,14 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.gbattisti.listadecompras.dominio.economia.Economia;
+import com.gbattisti.listadecompras.dominio.economia.EconomiaBanco;
+import com.gbattisti.listadecompras.dominio.economia.EconomiaFiltro;
 import com.gbattisti.listadecompras.dominio.ultis.banco.DB_Gateway;
 
 import java.util.ArrayList;
 
 public class BancoBanco {
     private DB_Gateway gw;
+    private Context ctx;
 
     public BancoBanco(Context ctx){
+        this.ctx = ctx;
         gw = DB_Gateway.getInstance(ctx);
     }
 
@@ -43,10 +48,13 @@ public class BancoBanco {
     }
 
     public void excluir(Banco banco) throws Exception{
-        int deletados = gw.getDatabase().delete("Banco", "ID=?", new String[]{banco.getID() + ""});
-        if(deletados == 0){
-            throw new Exception("Nenhum registro deletado.");
+        EconomiaFiltro filtroEconomia = new EconomiaFiltro();
+        filtroEconomia.setBanco(banco);
+        ArrayList<Economia> lista = new EconomiaBanco(ctx).listar(filtroEconomia);
+        if(lista.size() > 0){
+            throw new Exception("Impossível deletar, há economias relacionadas.");
         }
+        gw.getDatabase().delete("Banco", "ID=?", new String[]{banco.getID() + ""});
 //        StringBuilder sql = new StringBuilder();
 //        sql.append("DELETE FROM Banco ");
 //        sql.append("WHERE ID="+banco.getID());
