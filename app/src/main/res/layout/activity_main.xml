@@ -34,6 +34,13 @@
         android:visibility="invisible"/>
 
     <include
+        android:id="@+id/include_depositar"
+        layout="@layout/depositar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
+    <include
         android:id="@+id/include_cadastroEconomia"
         layout="@layout/cadastro_economia"
         android:layout_width="match_parent"

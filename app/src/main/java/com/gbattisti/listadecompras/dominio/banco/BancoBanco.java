@@ -101,6 +101,19 @@ public class BancoBanco {
         }
     }
 
+    public double getPorcentagemAtualNoBanco(Banco banco) throws Exception{
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT sum(porcentagem_de_investimento) as porcentagem_total FROM Economia where id_banco = "+banco.getID());
+
+        Cursor cursorBanco = gw.getDatabase().rawQuery(sql.toString(), null);
+        if(cursorBanco.moveToNext()){
+            int valor = cursorBanco.getInt(cursorBanco.getColumnIndex("porcentagem_total"));
+            return valor;
+        }
+
+        return 0.0;
+    }
+
     public void recriarTabela(){
         gw.getDatabase().execSQL("DROP TABLE Banco");
         gw.getDatabase().execSQL("CREATE TABLE Banco (ID INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, saldo double)");

@@ -11,6 +11,7 @@ public class Economia {
     private Banco banco;
     private String nome;
     private Double porcentagemDeInvestimento;
+    private Double meta;
 
     public int getID() {
         return ID;
@@ -42,6 +43,14 @@ public class Economia {
 
     public void setPorcentagemDeInvestimento(Double porcentagemDeInvestimento) {
         this.porcentagemDeInvestimento = porcentagemDeInvestimento;
+    }
+
+    public Double getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Double meta) {
+        this.meta = meta;
     }
 
     @Override

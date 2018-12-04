@@ -23,11 +23,12 @@ public class EconomiaBanco {
     public void incluir(Economia economia){
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO Economia ");
-        sql.append("(nome, porcentagem_de_investimento, id_banco) ");
+        sql.append("(nome, porcentagem_de_investimento, meta, id_banco) ");
         sql.append("VALUES");
         sql.append("(");
         sql.append("'"+economia.getNome() + "', ");
         sql.append(economia.getPorcentagemDeInvestimento() + ", ");
+        sql.append(economia.getMeta() + ", ");
         sql.append(economia.getBanco().getID());
         sql.append(");");
 
@@ -38,7 +39,8 @@ public class EconomiaBanco {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE Economia SET ");
         sql.append("nome='"+economia.getNome()+"', ");
-        sql.append("porcentagem_de_investimento="+economia.getPorcentagemDeInvestimento());
+        sql.append("porcentagem_de_investimento="+economia.getPorcentagemDeInvestimento()+", ");
+        sql.append("meta = "+economia.getMeta());
         sql.append(" WHERE ID = "+economia.getID());
         Log.d("SQL:", sql.toString());
         gw.getDatabase().rawQuery(sql.toString(), null);
@@ -69,20 +71,11 @@ public class EconomiaBanco {
         economia.setID(cursor.getInt(cursor.getColumnIndex("ID")));
         economia.setPorcentagemDeInvestimento(cursor.getDouble(cursor.getColumnIndex("porcentagem_de_investimento")));
         economia.setNome(cursor.getString(cursor.getColumnIndex("nome")));
+        economia.setMeta(cursor.getDouble(cursor.getColumnIndex("meta")));
         Banco banco = new Banco();
         banco.setID(cursor.getInt(cursor.getColumnIndex("id_banco")));
         BancoBanco bancoBanco = new BancoBanco(ctx);
         bancoBanco.carregar(banco);
         economia.setBanco(banco);
-    }
-
-
-
-
-    public void recriarTabela(){
-        gw.getDatabase().execSQL("DROP TABLE Economia");
-        gw.getDatabase().execSQL("CREATE TABLE Economia (ID INTEGER PRIMARY KEY AUTOINCREMENT, porcentagem_de_desenvolvimento double not null," +
-                "nome text not null, id_banco int not null, " +
-                "FOREIGN KEY(id_banco) REFERENCES Banco(id));");
     }
 }

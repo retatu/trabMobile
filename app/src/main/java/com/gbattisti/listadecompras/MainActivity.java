@@ -36,6 +36,8 @@ import com.gbattisti.listadecompras.dominio.banco.Banco;
 import com.gbattisti.listadecompras.dominio.banco.BancoBanco;
 import com.gbattisti.listadecompras.dominio.banco.BancoFiltro;
 import com.gbattisti.listadecompras.dominio.banco.recycler.BancoAdapter;
+import com.gbattisti.listadecompras.dominio.deposito.Deposito;
+import com.gbattisti.listadecompras.dominio.deposito.DepositoBanco;
 import com.gbattisti.listadecompras.dominio.economia.Economia;
 import com.gbattisti.listadecompras.dominio.economia.EconomiaBanco;
 import com.gbattisti.listadecompras.dominio.economia.EconomiaFiltro;
@@ -182,10 +184,42 @@ public class MainActivity extends AppCompatActivity
         configurarRecyclerEconomia();
         criarCadastroBanco();
         criarCadastroEconomia();
+        criarDepositar();
         //configurarRecycler();
     }
 
+    private void criarDepositar(){
+        final Button buttonDepositar = (Button) findViewById(R.id.buttonDepositar);
+        buttonDepositar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    Spinner banco = findViewById(R.id.spinner_depositar_bancos);;
+                    EditText valorDeposito = findViewById(R.id.editText_ValorDepositar);
+                    Banco bancoSelecionado = (Banco) banco.getSelectedItem();
 
+                    Deposito deposito = new Deposito();
+                    deposito.setValorDeposito(Double.valueOf(valorDeposito.getText().toString()));
+                    deposito.setBanco(bancoSelecionado);
+
+                    DepositoBanco depositoBanco = new DepositoBanco(getBaseContext());
+                    depositoBanco.incluir(deposito);
+
+                    bancoSelecionado.setSaldo(bancoSelecionado.getSaldo()+deposito.getValorDeposito());
+                    BancoBanco bancoBanco = new BancoBanco(getBaseContext());
+                    bancoBanco.alterar(bancoSelecionado);
+
+                    valorDeposito.setText("");
+
+                    Snackbar.make(buttonDepositar, "Depositado com sucesso.", Snackbar.LENGTH_LONG).show();
+                }catch(Exception ex){
+                    Log.d("Erro", ex.getMessage());
+                    Snackbar.make(buttonDepositar, "Erro ao depositar: "+ex.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+
+            }
+        });
+    }
 
     private void criarCadastroBanco(){
         final Button buttonCadastrarBanco = (Button) findViewById(R.id.buttonCadastrarBanco);
@@ -214,18 +248,38 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 try{
-                    Spinner banco = findViewById(R.id.spinner_bancos);
+                    Spinner banco = findViewById(R.id.spinner_economia_bancos);
                     EditText porcentagem = findViewById(R.id.editText_Porcentagem);
                     EditText nome = (EditText)findViewById(R.id.editText_NomeEconomia);
+                    EditText meta = (EditText)findViewById(R.id.editText_Meta);
 
                     Banco bancoSelecionado = (Banco) banco.getSelectedItem();
+                    BancoBanco bancoBanco = new BancoBanco(getBaseContext());
+
+                    double porcentagemAtual = bancoBanco.getPorcentagemAtualNoBanco(bancoSelecionado);
+
+                    if(porcentagemAtual > 100){
+                        Snackbar.make(buttonCadastrarEconomia, "A porcentagem atual é igual a: "+porcentagemAtual, Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
                     Economia economia = new Economia();
                     economia.setBanco(bancoSelecionado);
                     economia.setPorcentagemDeInvestimento(Double.valueOf(porcentagem.getText().toString()));
                     economia.setNome(nome.getText().toString());
-
+                    economia.setMeta(Double.valueOf(meta.getText().toString()));
+                    //bancoBanco.getPorcentagemAtualNoBanco(bancoSelecionado)
+                    if(porcentagemAtual + economia.getPorcentagemDeInvestimento() > 100){
+                        Snackbar.make(buttonCadastrarEconomia, "Porcentagem máxima disponível é de: "+(100 - porcentagemAtual), Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
                     EconomiaBanco economiaBanco = new EconomiaBanco(getBaseContext());
                     economiaBanco.incluir(economia);
+
+                    Snackbar.make(buttonCadastrarEconomia, "Cadastrado com sucesso.", Snackbar.LENGTH_LONG).show();
+
+                    porcentagem.setText("");
+                    nome.setText("");
+                    meta.setText("");
                 }catch(Exception ex){
                     Log.d("Erro", ex.getMessage());
                     Snackbar.make(buttonCadastrarEconomia, ex.getMessage(), Snackbar.LENGTH_LONG).show();
@@ -352,6 +406,8 @@ public class MainActivity extends AppCompatActivity
             cadastrarBanco();
         }else if(id == R.id.nav_cadastrarEconomia){
             cadastrarEconomia();
+        }else if(id == R.id.nav_depositar){
+            depositar();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -359,24 +415,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void cadastrarEconomia(){
-        findViewById(R.id.include_cadastroEconomia).setVisibility(View.VISIBLE);
-        findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
-        try {
-            ArrayList<Economia> listaEconomia = new EconomiaBanco(getBaseContext()).listar(new EconomiaFiltro());
-            if(listaEconomia.size() > 0){
-                RecyclerView recyclerView = findViewById(R.id.recyclerView_economias);
-                recyclerView.setVisibility(View.VISIBLE);
-                EconomiaAdapter economiaAdapter = new EconomiaAdapter(listaEconomia);
-                recyclerView.setAdapter(economiaAdapter);
-            }else{
-                recyclerViewEconomia.setVisibility(View.INVISIBLE);
-            }
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        Spinner spinnerBancos = findViewById(R.id.spinner_bancos);
+    private void registrarSpinner(@android.support.annotation.IdRes int id_spinner){
+        Spinner spinnerBancos = findViewById(id_spinner);
 
         BancoBanco bancoBanco = new BancoBanco(getBaseContext());
         ArrayList<Banco> listaBancos = null;
@@ -397,13 +437,65 @@ public class MainActivity extends AppCompatActivity
             spinnerBancos.setAdapter(itensSpinnerAdapter);
         }
         catch (Exception e) {
-            //Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void depositar(){
+        findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_depositar).setVisibility(View.VISIBLE);
+
+        registrarSpinner(R.id.spinner_depositar_bancos);
+    }
+
+    private void cadastrarEconomia(){
+        findViewById(R.id.include_cadastroEconomia).setVisibility(View.VISIBLE);
+        findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_depositar).setVisibility(View.INVISIBLE);
+        try {
+            ArrayList<Economia> listaEconomia = new EconomiaBanco(getBaseContext()).listar(new EconomiaFiltro());
+            if(listaEconomia.size() > 0){
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_economias);
+                recyclerView.setVisibility(View.VISIBLE);
+                EconomiaAdapter economiaAdapter = new EconomiaAdapter(listaEconomia);
+                recyclerView.setAdapter(economiaAdapter);
+            }else{
+                recyclerViewEconomia.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        registrarSpinner(R.id.spinner_economia_bancos);
+//        Spinner spinnerBancos = findViewById(R.id.spinner_economia_bancos);
+//
+//        BancoBanco bancoBanco = new BancoBanco(getBaseContext());
+//        ArrayList<Banco> listaBancos = null;
+//        try {
+//            listaBancos = bancoBanco.listar(new BancoFiltro());
+//            if(listaBancos.size() < 1){
+//                spinnerBancos.setAdapter(null);
+//                Toast.makeText(getBaseContext(), "Nenhum banco cadastrado, por favor cadastre um banco.", Toast.LENGTH_LONG).show();
+//                return;
+//            }
+//            ArrayAdapter<Banco> itensSpinnerAdapter = new ArrayAdapter<>(getBaseContext(),
+//                    android.R.layout.simple_spinner_item);
+//            for (Banco banco : listaBancos){
+//                itensSpinnerAdapter.add(banco);
+//
+//            }
+//            itensSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            spinnerBancos.setAdapter(itensSpinnerAdapter);
+//        }
+//        catch (Exception e) {
+//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//        }
     }
 
     private void cadastrarBanco(){
         findViewById(R.id.include_cadastroBanco).setVisibility(View.VISIBLE);
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_depositar).setVisibility(View.INVISIBLE);
 
         try {
             ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());
@@ -416,7 +508,7 @@ public class MainActivity extends AppCompatActivity
                 recyclerViewBanco.setVisibility(View.INVISIBLE);
             }
         } catch (Exception e) {
-            //Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
