@@ -22,7 +22,7 @@
             android:title="Depositar" />
 
         <item
-            android:id="@+id/nav_metas"
+            android:id="@+id/nav_verificarEconomias"
             android:title="Verificar Economias" />
 
     </group>

@@ -82,11 +82,6 @@ public class Economia {
 
     @Override
     public String toString() {
-        return "Economia{" +
-                "ID=" + ID +
-                ", banco=" + banco.toString() +
-                ", nome='" + nome + '\'' +
-                ", porcentagemDeInvestimento=" + porcentagemDeInvestimento +
-                '}';
+        return nome;
     }
 }

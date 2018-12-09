@@ -57,6 +57,13 @@
         android:layout_height="match_parent"
         android:visibility="visible" />
 
+    <include
+        android:id="@+id/include_verificar_economias"
+        layout="@layout/verificar_economias"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
