@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -43,6 +44,13 @@ import com.gbattisti.listadecompras.dominio.economia.EconomiaBanco;
 import com.gbattisti.listadecompras.dominio.economia.EconomiaFiltro;
 import com.gbattisti.listadecompras.dominio.economia.recycler.EconomiaAdapter;
 import com.gbattisti.listadecompras.dominio.ultis.banco.DB_Conexao;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,6 +81,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences.Editor editor;
 
     private ConstraintLayout main_layout;
+
+    private PieChart pieChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +195,56 @@ public class MainActivity extends AppCompatActivity
         criarCadastroBanco();
         criarCadastroEconomia();
         criarDepositar();
+        criarGraficoPrincipal();
         //configurarRecycler();
+
+
+    }
+
+
+    private void criarGraficoPrincipal(){
+        try {
+            pieChart = (PieChart) findViewById(R.id.grafico_Bancos);
+
+            pieChart.setUsePercentValues(true);
+            pieChart.getDescription().setEnabled(false);
+            pieChart.setExtraOffsets(5, 10, 5, 5);
+            pieChart.setHoleRadius(0);
+            pieChart.setDragDecelerationFrictionCoef(0.95F);
+            pieChart.setHoleColor(Color.WHITE);
+            pieChart.setTransparentCircleAlpha(61);
+            pieChart.animateY(1500, Easing.EaseInOutCubic);
+            pieChart.setDrawHoleEnabled(false);
+
+            ArrayList<PieEntry> dadosGrafico = new ArrayList<>();
+
+            ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());
+            for (Banco banco : listaBancos){
+                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()));
+            }
+
+//            dadosGrafico.add(new PieEntry(34, "sdf"));
+//            dadosGrafico.add(new PieEntry(23, "vbncv"));
+//            dadosGrafico.add(new PieEntry(14, "uioyui"));
+//            dadosGrafico.add(new PieEntry(53, " mcvbn"));
+//            dadosGrafico.add(new PieEntry(40, "asdf"));
+
+            PieDataSet dataSet = new PieDataSet(dadosGrafico, "TEste");
+            //dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
+            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+
+            PieData data = new PieData(dataSet);
+            data.setValueTextSize(10);
+            data.setValueTextColor(Color.YELLOW);
+
+            //data.setValueFormatter();
+            pieChart.setData(data);
+        }catch(Exception ex){
+            //Snackbar.make(pieChart, "Erro ao gerar gráfico: "+ex.getMessage(), Snackbar.LENGTH_LONG).show();
+        }
+
     }
 
     private void criarDepositar(){
@@ -408,6 +467,8 @@ public class MainActivity extends AppCompatActivity
             cadastrarEconomia();
         }else if(id == R.id.nav_depositar){
             depositar();
+        }else if(id == R.id.nav_pagina_inicial){
+            paginaInicial();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -441,10 +502,48 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void paginaInicial(){
+        findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_depositar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_grafico).setVisibility(View.VISIBLE);
+
+        try{
+            ArrayList<PieEntry> dadosGrafico = new ArrayList<>();
+
+            ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());
+            for (Banco banco : listaBancos){
+                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()));
+            }
+
+    //            dadosGrafico.add(new PieEntry(34, "sdf"));
+    //            dadosGrafico.add(new PieEntry(23, "vbncv"));
+    //            dadosGrafico.add(new PieEntry(14, "uioyui"));
+    //            dadosGrafico.add(new PieEntry(53, " mcvbn"));
+    //            dadosGrafico.add(new PieEntry(40, "asdf"));
+
+            PieDataSet dataSet = new PieDataSet(dadosGrafico, "TEste");
+            //dataSet.setSliceSpace(3f);
+            dataSet.setSelectionShift(5f);
+            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+
+
+            PieData data = new PieData(dataSet);
+            data.setValueTextSize(10);
+            data.setValueTextColor(Color.YELLOW);
+
+            pieChart.setData(data);
+
+        }catch(Exception e){
+            Toast.makeText(getBaseContext(), "Erro ao voltar para a página inicial: "+e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void depositar(){
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
         findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
         findViewById(R.id.include_depositar).setVisibility(View.VISIBLE);
+        findViewById(R.id.include_grafico).setVisibility(View.INVISIBLE);
 
         registrarSpinner(R.id.spinner_depositar_bancos);
     }
@@ -453,6 +552,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.VISIBLE);
         findViewById(R.id.include_cadastroBanco).setVisibility(View.INVISIBLE);
         findViewById(R.id.include_depositar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_grafico).setVisibility(View.INVISIBLE);
         try {
             ArrayList<Economia> listaEconomia = new EconomiaBanco(getBaseContext()).listar(new EconomiaFiltro());
             if(listaEconomia.size() > 0){
@@ -496,6 +596,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.include_cadastroBanco).setVisibility(View.VISIBLE);
         findViewById(R.id.include_cadastroEconomia).setVisibility(View.INVISIBLE);
         findViewById(R.id.include_depositar).setVisibility(View.INVISIBLE);
+        findViewById(R.id.include_grafico).setVisibility(View.INVISIBLE);
 
         try {
             ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());

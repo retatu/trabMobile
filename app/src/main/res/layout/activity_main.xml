@@ -8,6 +8,8 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+
+
     <include
         android:id="@+id/include_main"
         layout="@layout/app_bar_main"
@@ -48,6 +50,13 @@
         android:visibility="invisible"/>
 
 
+    <include
+        android:id="@+id/include_grafico"
+        layout="@layout/grafico_bancos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -56,5 +65,12 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
+
+    <!--<com.github.mikephil.charting.charts.PieChart-->
+        <!--android:id="@+id/grafico_Bancos"-->
+        <!--android:layout_width="1dp"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:visibility="invisible"/>-->
+
 
 </android.support.v4.widget.DrawerLayout>

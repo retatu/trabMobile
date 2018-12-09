@@ -5,6 +5,9 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_pagina_inicial"
+            android:title="Página Inicial" />
+        <item
             android:id="@+id/nav_cadastrarBanco"
             android:icon="@drawable/cadastro"
             android:title="Cadastrar Banco" />
