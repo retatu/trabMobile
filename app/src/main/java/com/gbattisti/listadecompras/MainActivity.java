@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.include_main).setVisibility(View.INVISIBLE);
-                findViewById(R.id.include_cadastro).setVisibility(View.VISIBLE);
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                findViewById(R.id.include_main).setVisibility(View.INVISIBLE);
+//                findViewById(R.id.include_cadastro).setVisibility(View.VISIBLE);
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,81 +125,81 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Obtem a referência da view de cabeçalho (importante para achar os componentes)
-        View headerView = navigationView.getHeaderView(0);
-        seu_nome = headerView.findViewById(R.id.seuNomeID);
-        seu_email = headerView.findViewById(R.id.seuEmailID);
+//        View headerView = navigationView.getHeaderView(0);
+//        seu_nome = headerView.findViewById(R.id.seuNomeID);
+//        seu_email = headerView.findViewById(R.id.seuEmailID);
 
-        // Inicialização para gravar as preferencias
-        pref = getSharedPreferences("ListaComprasPrefArq", MODE_PRIVATE);
-        editor = pref.edit();
-
-        // Verifica se já foi gravado valores
-        if (pref.contains("Nome")) {
-            seu_nome.setText(pref.getString("Nome", "sem nome"));
-            seu_email.setText(pref.getString("Email", "sem email"));
-        } else {
-            Snackbar.make(main_layout, "Por favor configure seu nome e email", Snackbar.LENGTH_LONG).show();
-            seu_nome.setText("sem nome");
-            seu_email.setText("sem email");
-        }
+//        // Inicialização para gravar as preferencias
+//        pref = getSharedPreferences("ListaComprasPrefArq", MODE_PRIVATE);
+//        editor = pref.edit();
+//
+//        // Verifica se já foi gravado valores
+//        if (pref.contains("Nome")) {
+//            seu_nome.setText(pref.getString("Nome", "sem nome"));
+//            seu_email.setText(pref.getString("Email", "sem email"));
+//        } else {
+//            Snackbar.make(main_layout, "Por favor configure seu nome e email", Snackbar.LENGTH_LONG).show();
+//            seu_nome.setText("sem nome");
+//            seu_email.setText("sem email");
+//        }
 
 
         //        Botões de Incluir/Cancelar/Limpar
-        Button btnCancelar = (Button) findViewById(R.id.btn_cancelarID);
-        btnCancelar.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.include_main).setVisibility(View.VISIBLE);
-                findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
-            }
-        });
-
-
-        Button btnLimpar = (Button) findViewById(R.id.btn_limparID);
-        btnLimpar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        Button btnSalvar = (Button) findViewById(R.id.btn_salvarID);
-        btnSalvar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText txtItem = findViewById(R.id.et_itemID);
-                EditText txtQuantidade = findViewById(R.id.et_quantidadeID);
-
-                //pegando os valores
-                String item = txtItem.getText().toString();
-                String quantidade = txtQuantidade.getText().toString();
-                if (item.equals("")) {
-                    Snackbar.make(view, "Preencha o item!", Snackbar.LENGTH_SHORT).show();
-                } else {
-                    //salvando os dados
-                    Compra compra = new Compra(0, item, quantidade);
-                    CompraDAO dao = new CompraDAO(getBaseContext());
-                    long salvoID = dao.salvarItem(compra);
-                    if (salvoID != -1) {
-                        //limpa os campos
-                        txtQuantidade.setText("");
-                        txtItem.setText("");
-
-                        //adiciona no recyclerView
-                        compra.setID(salvoID);
-                        adapter.adicionarCompra(compra);
-
-                        Snackbar.make(view, "Salvou!", Snackbar.LENGTH_LONG).show();
-                        findViewById(R.id.include_main).setVisibility(View.VISIBLE);
-                        findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
-                    } else {
-                        Snackbar.make(view, "Erro ao salvarItem, consulte os logs!", Snackbar.LENGTH_LONG).show();
-                        findViewById(R.id.include_main).setVisibility(View.VISIBLE);
-                        findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
+//        Button btnCancelar = (Button) findViewById(R.id.btn_cancelarID);
+//        btnCancelar.setOnClickListener(new Button.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                findViewById(R.id.include_main).setVisibility(View.VISIBLE);
+//                findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
+//            }
+//        });
+//
+//
+//        Button btnLimpar = (Button) findViewById(R.id.btn_limparID);
+//        btnLimpar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+//
+//        Button btnSalvar = (Button) findViewById(R.id.btn_salvarID);
+//        btnSalvar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                EditText txtItem = findViewById(R.id.et_itemID);
+//                EditText txtQuantidade = findViewById(R.id.et_quantidadeID);
+//
+//                //pegando os valores
+//                String item = txtItem.getText().toString();
+//                String quantidade = txtQuantidade.getText().toString();
+//                if (item.equals("")) {
+//                    Snackbar.make(view, "Preencha o item!", Snackbar.LENGTH_SHORT).show();
+//                } else {
+//                    //salvando os dados
+//                    Compra compra = new Compra(0, item, quantidade);
+//                    CompraDAO dao = new CompraDAO(getBaseContext());
+//                    long salvoID = dao.salvarItem(compra);
+//                    if (salvoID != -1) {
+//                        //limpa os campos
+//                        txtQuantidade.setText("");
+//                        txtItem.setText("");
+//
+//                        //adiciona no recyclerView
+//                        compra.setID(salvoID);
+//                        adapter.adicionarCompra(compra);
+//
+//                        Snackbar.make(view, "Salvou!", Snackbar.LENGTH_LONG).show();
+//                        findViewById(R.id.include_main).setVisibility(View.VISIBLE);
+//                        findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
+//                    } else {
+//                        Snackbar.make(view, "Erro ao salvarItem, consulte os logs!", Snackbar.LENGTH_LONG).show();
+//                        findViewById(R.id.include_main).setVisibility(View.VISIBLE);
+//                        findViewById(R.id.include_cadastro).setVisibility(View.INVISIBLE);
+//                    }
+//                }
+//            }
+//        });
         configurarRecyclerBanco();
         configurarRecyclerEconomia();
         criarCadastroBanco();
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity
                         pieChartEconomias.setExtraOffsets(5, 10, 5, 5);
                         pieChartEconomias.setHoleRadius(0);
                         pieChartEconomias.setDragDecelerationFrictionCoef(0.95F);
-                        pieChartEconomias.setHoleColor(Color.WHITE);
+                        pieChartEconomias.setHoleColor(Color.BLACK);
                         pieChartEconomias.setTransparentCircleAlpha(61);
                         pieChartEconomias.animateY(1500, Easing.EaseInOutCubic);
                         pieChartEconomias.setDrawHoleEnabled(false);
@@ -250,12 +250,11 @@ public class MainActivity extends AppCompatActivity
                         }
                         PieDataSet dataSet = new PieDataSet(dadosGrafico, "Bancos");
                         dataSet.setSelectionShift(5f);
-                        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+                        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
 
                         PieData data = new PieData(dataSet);
-                        data.setValueTextSize(10);
-                        data.setValueTextColor(Color.YELLOW);
+                        data.setDrawValues(false);
 
                         pieChartEconomias.setData(data);
                     }catch(Exception ex){
@@ -273,17 +272,58 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void criarVerificarEconomia(){
+        Button botao_DobrarMeta = findViewById(R.id.button_dobrarMeta);
+        final Button botao_ConcluirEconomia = findViewById(R.id.button_concluirEconomia);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_verificar_economias);
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Economia economia = (Economia) spinner.getSelectedItem();
                 criarGraficoEconomia(economia);
+                if(economia.getSaldoEconomia() >= economia.getMeta()){
+                    botao_ConcluirEconomia.setVisibility(View.VISIBLE);
+                }else{
+                    botao_ConcluirEconomia.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        botao_DobrarMeta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Economia economia = (Economia) spinner.getSelectedItem();
+                economia.setMeta(economia.getMeta()*2);
+                EconomiaBanco economiaBanco = new EconomiaBanco(getBaseContext());
+                economiaBanco.alterar(economia);
+                criarGraficoEconomia(economia);
+                if(economia.getSaldoEconomia() >= economia.getMeta()){
+                    botao_ConcluirEconomia.setVisibility(View.VISIBLE);
+                }else{
+                    botao_ConcluirEconomia.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        botao_ConcluirEconomia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    Economia economia = (Economia) spinner.getSelectedItem();
+                    Banco banco = economia.getBanco();
+                    banco.setSaldo(banco.getSaldo() - economia.getSaldoEconomia());
+                    EconomiaBanco economiaBanco = new EconomiaBanco(getBaseContext());
+                    economiaBanco.excluir(economia);
+                    BancoBanco bancoBanco = new BancoBanco(getBaseContext());
+                    bancoBanco.alterar(banco);
+                    verificarEconomias();
+                }catch(Exception ex){
+                    Snackbar.make(pieChartBancos, "Erro ao finalizar a economia: "+ex.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -296,15 +336,20 @@ public class MainActivity extends AppCompatActivity
         barChartEconomia.getDescription().setEnabled(false);
 
         ArrayList<BarEntry> dadosGrafico = new ArrayList<>();
-        dadosGrafico.add(new BarEntry(1, economia.getSaldoEconomia().floatValue(), "Economia"));
+        dadosGrafico.add(new BarEntry(2, economia.getSaldoEconomia().floatValue(), "Economia"));
         dadosGrafico.add(new BarEntry(3, economia.getMeta().floatValue(), "Meta"));
+        dadosGrafico.add(new BarEntry(1, 0, ""));
+
 
 
         BarDataSet barDataSet = new BarDataSet(dadosGrafico, "Economia");
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         barDataSet.setDrawValues(true);
+        barDataSet.setBarBorderWidth(0.2f);
 
         BarData barData = new BarData(barDataSet);
+        barData.setDrawValues(false);
+
 
         barChartEconomia.setData(barData);
         barChartEconomia.invalidate();
@@ -319,7 +364,7 @@ public class MainActivity extends AppCompatActivity
             pieChartBancos.setExtraOffsets(5, 10, 5, 5);
             pieChartBancos.setHoleRadius(0);
             pieChartBancos.setDragDecelerationFrictionCoef(0.95F);
-            pieChartBancos.setHoleColor(Color.WHITE);
+            pieChartBancos.setHoleColor(Color.BLACK);
             pieChartBancos.setTransparentCircleAlpha(61);
             pieChartBancos.animateY(1500, Easing.EaseInOutCubic);
             pieChartBancos.setDrawHoleEnabled(false);
@@ -331,22 +376,21 @@ public class MainActivity extends AppCompatActivity
                 if(banco.getSaldo() < 1){
                     continue;
                 }
-                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()));
+                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()+" - "+banco.getSaldo()));
             }
 
             PieDataSet dataSet = new PieDataSet(dadosGrafico, "Bancos");
             //dataSet.setSliceSpace(3f);
             dataSet.setSelectionShift(5f);
-            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
 
             PieData data = new PieData(dataSet);
-            data.setValueTextSize(10);
-            data.setValueTextColor(Color.YELLOW);
+            data.setDrawValues(false);
 
             pieChartBancos.setData(data);
         }catch(Exception ex){
-            //Snackbar.make(pieChartBancos, "Erro ao gerar gráfico: "+ex.getMessage(), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(pieChartBancos, "Erro ao gerar gráfico: "+ex.getMessage(), Snackbar.LENGTH_LONG).show();
         }
 
     }
@@ -686,27 +730,26 @@ public class MainActivity extends AppCompatActivity
 
             ArrayList<Banco> listaBancos = new BancoBanco(getBaseContext()).listar(new BancoFiltro());
             for (Banco banco : listaBancos){
-                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()));
+                if(banco.getSaldo() < 1){
+                    continue;
+                }
+                dadosGrafico.add(new PieEntry(banco.getSaldo().floatValue(), banco.getNome()+" - "+banco.getSaldo()));
             }
 
-    //            dadosGrafico.add(new PieEntry(34, "sdf"));
-    //            dadosGrafico.add(new PieEntry(23, "vbncv"));
-    //            dadosGrafico.add(new PieEntry(14, "uioyui"));
-    //            dadosGrafico.add(new PieEntry(53, " mcvbn"));
-    //            dadosGrafico.add(new PieEntry(40, "asdf"));
+            PieDataSet dataSet = new PieDataSet(dadosGrafico, "Bancos");
 
-            PieDataSet dataSet = new PieDataSet(dadosGrafico, "TEste");
             //dataSet.setSliceSpace(3f);
             dataSet.setSelectionShift(5f);
-            dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+            dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
 
             PieData data = new PieData(dataSet);
             data.setValueTextSize(10);
-            data.setValueTextColor(Color.YELLOW);
+            data.setValueTextColor(Color.BLACK);
+            data.setDrawValues(false);
 
             pieChartBancos.setData(data);
-
+            pieChartBancos.invalidate();
         }catch(Exception e){
             Toast.makeText(getBaseContext(), "Erro ao voltar para a página inicial: "+e.getMessage(), Toast.LENGTH_LONG).show();
         }

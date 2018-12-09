@@ -1,5 +1,7 @@
 package com.gbattisti.listadecompras.dominio.banco;
 
+import android.util.Log;
+
 import java.util.Objects;
 
 public class Banco {
@@ -24,6 +26,7 @@ public class Banco {
     }
 
     public Double getSaldo() {
+        Log.d("SADO", saldo.toString());
         return saldo == null ? 0.0 : saldo;
     }
 
