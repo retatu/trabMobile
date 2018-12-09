@@ -24,6 +24,9 @@
         <item
             android:id="@+id/nav_verificarEconomias"
             android:title="Verificar Economias" />
+        <item
+            android:id="@+id/nav_VerificarEconomiasPorBanco"
+            android:title="Verificar Economias Banco" />
 
     </group>
 

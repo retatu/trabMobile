@@ -64,6 +64,13 @@
         android:layout_height="match_parent"
         android:visibility="invisible" />
 
+    <include
+        android:id="@+id/include_verificar_economias_por_banco"
+        layout="@layout/verificar_economias_por_banco"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

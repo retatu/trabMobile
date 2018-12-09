@@ -68,35 +68,6 @@ public class EconomiaAdapter extends RecyclerView.Adapter<EconomiaHolder> {
                         .show();
             }
         });
-        holder.buttonAlterar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final View view = v;
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setTitle("Confirmação")
-                        .setMessage("Tem certeza que deseja excluir este item?")
-                        .setPositiveButton("Excluir", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                try {
-                                    EconomiaBanco economiaBanco = new EconomiaBanco(view.getContext());
-                                    economia.setNome("nomeeee");
-                                    economiaBanco.alterar(economia);
-                                    notifyItemRangeChanged(viewID, listaEconomia.size());
-                                    Snackbar.make(view, "Alterado com sucesso.", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                } catch (Exception ex) {
-                                    Snackbar.make(view, "Erro ao Alterar: " + ex.getCause(), Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                }
-                            }
-                        })
-                        .setNegativeButton("Cancelar", null)
-                        .create()
-                        .show();
-            }
-        });
-
     }
 
     @Override
