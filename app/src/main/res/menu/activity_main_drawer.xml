@@ -6,6 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_pagina_inicial"
+            android:icon="@drawable/home"
             android:title="Página Inicial" />
         <item
             android:id="@+id/nav_cadastrarBanco"
@@ -19,13 +20,16 @@
 
         <item
             android:id="@+id/nav_depositar"
+            android:icon="@drawable/deposito"
             android:title="Depositar" />
 
         <item
             android:id="@+id/nav_verificarEconomias"
+            android:icon="@drawable/grafico"
             android:title="Verificar Economias" />
         <item
             android:id="@+id/nav_VerificarEconomiasPorBanco"
+            android:icon="@drawable/grafico"
             android:title="Verificar Economias Banco" />
 
     </group>
